@@ -1,0 +1,56 @@
+---
+title: "Survival Analysis 1"
+author: "Hana Akbarnejad"
+date: "4/25/2020"
+output: html_document
+---
+
+## KM curve and Survival Inference...
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(flexsurv)
+library(survival)
+library(MASS)
+library(survminer)
+library(KMsurv) # for data
+library(tidyverse)
+
+data(tongue)
+tongue_data = tongue # delta: censored vs not censored (0: censored, 1:not censored)
+                     # type: aneuploidy and diploid
+
+tongue_data = tongue_data %>% 
+  mutate(
+    type = as.factor(type)
+  )
+
+Surv(tongue_data$time, tongue_data$delta,type='right')
+```
+
+```{r}
+tongue_data_1 = tongue_data %>% 
+  filter(
+    type == "1"
+  )
+
+KM = survfit(Surv(time,delta)~1, data = tongue_data_1, conf.type='log')
+plot(KM, conf.int = FALSE, mark.time = TRUE,xlab="Months", ylab="Survival Probability", main="Tumor Type KM curve", cex.lab=1.5, cex.main=1.5)
+plot(KM)
+
+plot(KM,fun='cumhaz') # cumulative hazard fun
+# estimate cumulative hazard rates
+cbind(KM$time,-log(KM$surv),  cumsum(KM$n.event/KM$n.risk)) # time, KM est, Nelson-Aalen Estimator
+#
+# obtain survival rate at all times, with CI
+summary(KM, censored = TRUE)
+# median survival time, with CI
+print(KM)
+
+# for 1st year estimated survival
+summary(KM,time=52)   #  0.654 CI:(0.537, 0.797)
+
+ggsurvplot( survfit(Surv(time, delta) ~ type, data = tongue_data), conf.int=TRUE)
+```
+
