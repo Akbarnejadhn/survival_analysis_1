@@ -46,6 +46,8 @@ plot(KM_1, conf.int = TRUE, mark.time = TRUE,xlab="Months", ylab="Survival Proba
 KM_2 = survfit(Surv(time,delta)~1, data = tongue_data_2, conf.type='log', type="kaplan-meier")
 plot(KM_2, conf.int = TRUE, mark.time = TRUE,xlab="Months", ylab="Survival Probability", main="Tumor Type KM curve", cex.lab=1.5, cex.main=1.5)
 
+ggsurvplot( survfit(Surv(time, delta) ~ type, data = tongue_data), conf.int=TRUE)
+
 # plot(KM,fun='cumhaz') # cumulative hazard fun
 # estimate cumulative hazard rates
 # cbind(KM$time,-log(KM$surv),  cumsum(KM$n.event/KM$n.risk)) # time, KM est, Nelson-Aalen Estimator
@@ -58,7 +60,5 @@ plot(KM_2, conf.int = TRUE, mark.time = TRUE,xlab="Months", ylab="Survival Proba
 # for 1st year estimated survival
 summary(KM_1,time=52)   # survival: 0.654, CI:(0.537, 0.797)
 summary(KM_2,time=52)   # survival: 0.486, CI:(0.33, 0.716)
-
-# ggsurvplot( survfit(Surv(time, delta) ~ type, data = tongue_data), conf.int=TRUE)
 ```
 
