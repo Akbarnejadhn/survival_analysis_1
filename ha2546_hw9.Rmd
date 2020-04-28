@@ -35,22 +35,30 @@ tongue_data_1 = tongue_data %>%
     type == "1"
   )
 
-KM = survfit(Surv(time,delta)~1, data = tongue_data_1, conf.type='log')
-plot(KM, conf.int = FALSE, mark.time = TRUE,xlab="Months", ylab="Survival Probability", main="Tumor Type KM curve", cex.lab=1.5, cex.main=1.5)
-plot(KM)
+tongue_data_2 = tongue_data %>% 
+  filter(
+    type == "2"
+  )
 
-plot(KM,fun='cumhaz') # cumulative hazard fun
+KM_1 = survfit(Surv(time,delta)~1, data = tongue_data_1, conf.type='log', type="kaplan-meier")
+plot(KM_1, conf.int = TRUE, mark.time = TRUE,xlab="Months", ylab="Survival Probability", main="Tumor Type KM curve", cex.lab=1.5, cex.main=1.5)
+
+KM_2 = survfit(Surv(time,delta)~1, data = tongue_data_2, conf.type='log', type="kaplan-meier")
+plot(KM_2, conf.int = TRUE, mark.time = TRUE,xlab="Months", ylab="Survival Probability", main="Tumor Type KM curve", cex.lab=1.5, cex.main=1.5)
+
+# plot(KM,fun='cumhaz') # cumulative hazard fun
 # estimate cumulative hazard rates
-cbind(KM$time,-log(KM$surv),  cumsum(KM$n.event/KM$n.risk)) # time, KM est, Nelson-Aalen Estimator
+# cbind(KM$time,-log(KM$surv),  cumsum(KM$n.event/KM$n.risk)) # time, KM est, Nelson-Aalen Estimator
 #
 # obtain survival rate at all times, with CI
-summary(KM, censored = TRUE)
+# summary(KM, censored = TRUE)
 # median survival time, with CI
-print(KM)
+# print(KM)
 
 # for 1st year estimated survival
-summary(KM,time=52)   #  0.654 CI:(0.537, 0.797)
+summary(KM_1,time=52)   # survival: 0.654, CI:(0.537, 0.797)
+summary(KM_2,time=52)   # survival: 0.486, CI:(0.33, 0.716)
 
-ggsurvplot( survfit(Surv(time, delta) ~ type, data = tongue_data), conf.int=TRUE)
+# ggsurvplot( survfit(Surv(time, delta) ~ type, data = tongue_data), conf.int=TRUE)
 ```
 
