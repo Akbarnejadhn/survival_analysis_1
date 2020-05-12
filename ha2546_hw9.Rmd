@@ -26,7 +26,7 @@ tongue_data = tongue_data %>%
     type = as.factor(type)
   )
 
-Surv(tongue_data$time, tongue_data$delta,type='right')
+Surv(tongue_data$time, tongue_data$delta,type='right') # show time in sensible way
 ```
 
 ```{r}
